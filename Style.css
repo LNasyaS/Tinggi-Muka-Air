@@ -1,0 +1,94 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    box-sizing: border-box;
+    font-size: 18px;
+}
+
+body {
+    background: #222;
+    overflow: visible;
+
+}
+
+.card {
+    width: 90%;
+    max-width: 470px;
+    background: linear-gradient(135deg, #00feba, #5b548a);
+    color: #fff;
+    margin: 50px auto 0;
+    border-radius: 20px;
+    padding: 40px 35px;
+    text-align: center;
+}
+
+/* Select Lokasi */
+.search {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.search select {
+    display: inline-block;
+    border: 0;
+    outline: 0;
+    background-color: #ebfffc;
+    color: #555;
+    padding: inherit;
+    height: 50px;
+    border-radius: 15px;
+    flex: 1;
+    margin-right: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.search button {
+    display: inline-block;
+    border: 0;
+    outline: 0;
+    background-color: #ebfffc;
+    border-radius: 15px;
+    width: 60px;
+    height: 50px;
+}
+
+.search button img {
+    width: 16px;
+}
+
+.search button:hover {
+    cursor: pointer;
+    background-color: rgba(230, 224, 218, 0.8)
+}
+
+/* informasi */
+
+.tanggal {
+    margin-top: 30px;
+}
+
+.status-siaga img {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 70px;
+}
+
+.status-siaga h1 {
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.status {
+    font-size: 30px;
+    font-weight: 800;
+}
+
+.tinggi-air {
+    font-size: 40px;
+    font-weight: 500;
+}
