@@ -6,10 +6,10 @@ function xmlToJson(node) {
 
   if (node.nodeType === 1) {
     if (node.attributes.length > 0) {
-      obj['@attributes'] = {};
+      obj["@attributes"] = {};
       for (let j = 0; j < node.attributes.length; j++) {
         const attribute = node.attributes.item(j);
-        obj['@attributes'][attribute.nodeName] = attribute.nodeValue;
+        obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
       }
     }
 
@@ -40,25 +40,27 @@ function xmlToJson(node) {
   return obj;
 }
 
-let dropdown = document.getElementById('lokasi');
-let searchButton = document.getElementById('searchButton');
-let iconSiaga = document.getElementById('icon-siaga');
+let dropdown = document.getElementById("lokasi");
+let searchButton = document.getElementById("searchButton");
+let iconSiaga = document.getElementById("icon-siaga");
 
 // Clear existing options
 dropdown.length = 0;
 
-// Fetch XML data and populate dropdown
+// Fetch XML data and initialize dropdown
 fetch("https://poskobanjirdsda.jakarta.go.id/xmldata.xml")
-  .then(response => response.text())
-  .then(data => {
+  .then((response) => response.text())
+  .then((data) => {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(data, "text/xml");
     const json = xmlToJson(xmlDoc.documentElement);
 
-    const namaPintuAirList = json.SP_GET_LAST_STATUS_PINTU_AIR.map(item => item.NAMA_PINTU_AIR);
+    const namaPintuAirList = json.SP_GET_LAST_STATUS_PINTU_AIR.map(
+      (item) => item.NAMA_PINTU_AIR
+    );
 
-    namaPintuAirList.forEach(namaPintuAir => {
-      let option = document.createElement('option');
+    namaPintuAirList.forEach((namaPintuAir) => {
+      let option = document.createElement("option");
       option.text = namaPintuAir;
       option.value = namaPintuAir;
       dropdown.add(option);
@@ -70,75 +72,152 @@ fetch("https://poskobanjirdsda.jakarta.go.id/xmldata.xml")
     // Trigger the search button click event after setting the initial value
     searchButton.click();
   })
-  .catch(error => {
-    console.error('Fetch Error:', error);
+  .catch((error) => {
+    console.error("Fetch Error:", error);
   });
 
+// Function to fetch XML data
+function fetchXML(selectedValue) {
+  fetch("https://poskobanjirdsda.jakarta.go.id/xmldata.xml")
+    .then((response) => response.text())
+    .then((data) => {
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(data, "text/xml");
+      const json = xmlToJson(xmlDoc.documentElement);
 
-searchButton.addEventListener('click', function () {
-  const selectedValue = dropdown.value;
+      const selectedData = json.SP_GET_LAST_STATUS_PINTU_AIR.find(
+        (item) => item.NAMA_PINTU_AIR === selectedValue
+      );
 
-  if (selectedValue !== '') {
-    fetch("https://poskobanjirdsda.jakarta.go.id/xmldata.xml")
-      .then(response => response.text())
-      .then(data => {
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(data, "text/xml");
-        const json = xmlToJson(xmlDoc.documentElement);
+      if (selectedData) {
+        document.querySelector(".tanggal").textContent = selectedData.TANGGAL;
+        document.querySelector(".lokasi").textContent =
+          selectedData.NAMA_PINTU_AIR;
+        document.querySelector(".tinggi-air").textContent =
+          selectedData.TINGGI_AIR;
+        document.querySelector(".status").textContent =
+          selectedData.STATUS_SIAGA;
 
-        const selectedData = json.SP_GET_LAST_STATUS_PINTU_AIR.find(item => item.NAMA_PINTU_AIR === selectedValue);
-
-        if (selectedData) {
-          document.querySelector(".tanggal").textContent = selectedData.TANGGAL;
-          document.querySelector(".lokasi").textContent = selectedData.NAMA_PINTU_AIR;
-          document.querySelector(".tinggi-air").textContent = selectedData.TINGGI_AIR;
-          document.querySelector(".status").textContent = selectedData.STATUS_SIAGA;
-
-          if (selectedData.STATUS_SIAGA == "Status : Normal") {
-            iconSiaga.src = "images/icon-normal.png";
-          } else if (selectedData.STATUS_SIAGA == "Status : Siaga 1") {
-            iconSiaga.src = "images/icon-siaga1.png";
-          } else if (selectedData.STATUS_SIAGA == "Status : Siaga 2") {
-            iconSiaga.src = "images/icon-siaga2.gif";
-          } else if (selectedData.STATUS_SIAGA == "Status : Siaga 3") {
-            iconSiaga.src = "images/icon-siaga3.png";
-          }
-        } else {
-          console.error('Data not found for the selected location.');
+        if (selectedData.STATUS_SIAGA == "Status : Normal") {
+          iconSiaga.src = "images/icon-normal.png";
+        } else if (selectedData.STATUS_SIAGA == "Status : Siaga 1") {
+          iconSiaga.src = "images/icon-siaga1.png";
+        } else if (selectedData.STATUS_SIAGA == "Status : Siaga 2") {
+          iconSiaga.src = "images/icon-siaga2.gif";
+        } else if (selectedData.STATUS_SIAGA == "Status : Siaga 3") {
+          iconSiaga.src = "images/icon-siaga3.png";
         }
-      })
-      .catch(error => {
-        console.error('Fetch Error:', error);
-      });
-  } else {
-    console.warn('Please select a location before searching.');
-  }
-});
+      } else {
+        console.error("Data not found for the selected location.");
+      }
+    })
+    .catch((error) => {
+      console.error("Fetch Error:", error);
+    });
+}
 
-// Listen for changes in the dropdown selection
-dropdown.addEventListener('change', function () {
-  // Optionally, you can add additional logic here if needed
-});
-
+// Variables for Chart
+let waterLevels = [];
+let labels = [];
 
 // chart
-const ctx = document.getElementById('myChart');
+const ctx = document.getElementById("myChart");
 
-new Chart(ctx, {
-  type: 'line',
+myChart = new Chart(ctx, {
+  type: "line",
   data: {
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-    datasets: [{
-      label: '# of Votes',
-      data: [12, 19, 3, 5, 2, 3],
-      borderWidth: 1
-    }]
+    labels: labels,
+    datasets: [
+      {
+        label: "Tinggi Air",
+        data: waterLevels,
+        borderWidth: 1,
+      },
+    ],
   },
   options: {
     scales: {
       y: {
-        beginAtZero: true
-      }
-    }
+        beginAtZero: true,
+      },
+    },
+  },
+});
+
+// Update Chart
+function updateChart(labels, waterLevels) {
+  // Check if the chart instance exists, then destroy it
+  if (myChart) {
+    myChart.destroy();
   }
+
+  // Create a new chart instance with updated data
+  myChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Tinggi Air",
+          data: waterLevels,
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+}
+
+function fetchTimeline(idPintuAir) {
+  // Fetch the content of the webpage
+  fetch(
+    `https://poskobanjirdsda.jakarta.go.id/Pages/GenerateDataTinggiAir.aspx?IdPintuAir=${idPintuAir}&StartDate=15/11/2023&EndDate=16/11/2023`
+  )
+    .then((response) => response.text())
+    .then((data) => {
+      // Split the data based on semicolons and commas
+      let dataPoints = data.split(";");
+
+      // Variables for chart
+      waterLevels = [];
+      labels = [];
+
+      // Process each data point and extract the relevant information
+      dataPoints.forEach(function (point) {
+        let parts = point.split(",");
+        if (parts.length === 2) {
+          let timestamp = parts[0].trim();
+          let value = parseInt(parts[1].trim(), 10);
+          waterLevels.push(value);
+          labels.push(timestamp);
+        }
+      });
+
+      // Update chart
+      updateChart(labels, waterLevels);
+    })
+    .catch((error) => console.error("Error fetching data:", error));
+}
+
+// Search Button
+searchButton.addEventListener("click", function () {
+  const selectedValue = dropdown.value;
+
+  if (selectedValue !== "") {
+    fetchXML(selectedValue);
+    fetchTimeline("118");
+  } else {
+    console.warn("Please select a location before searching.");
+  }
+});
+
+// Listen for changes in the dropdown selection
+dropdown.addEventListener("change", function () {
+  // Optionally, you can add additional logic here if needed
 });
