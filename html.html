@@ -1,26 +1,54 @@
 <html>
     <head>
-        <meta name="viewport" content="width-device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="initial-scale=1.0">
         <title>Tinggi Muka Air</title>
-        <link rel="stylesheet" href="Style.css"> 
+        <link rel="stylesheet" href="Style.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     </head>
     <body>
         <div class="card">
+
            <div class="search">
             <select name="lokasi" id="lokasi"></select>
             <button id="searchButton"><img src="images/search.png" alt=""></button>
            </div>
+
            <div class="status-siaga">
-            <p class="tanggal">2023-11-14 14:00</p>
+            <p class="tanggal">Loading...</p>
             <h1 class="lokasi">PS. Angke Hulu</h1>
             <img src="images\icon-normal.png" id="icon-siaga">
-            <h2 class="tinggi-air">70 cm</h2>
-            <h2 class="status">Normal</h2>
-
+            <h2 class="tinggi-air">Loading...</h2>
+            <h2 class="status">Loading...</h2>
            </div> 
+
+           <div class="chart">
+            <h1>Chart</h1>
+
+           <div class="calendar">
+            <div class="calendar-kiri">
+             <h2>Waktu Awal</h2>
+             <input id="awal" type="text" placeholder="DD/MM/YYYY" onfocus="this.type='date'" onblur="this.type='text'">
+             <h2>Waktu Akhir</h2>
+             <input id="akhir" type="text" placeholder="DD/MM/YYYY" onfocus="this.type='date'" onblur="this.type='text'">
+            </div>
+
+            <div class="calendar-kanan">
+             <button id="search-button-calendar"><img src="images/search.png" alt=""></button>
+            </div>
+
+           </div>
+
+           <div>
+            <canvas id="myChart"></canvas>
+           </div>
+           </div>
+
         </div>
 
-        <script src="JS.js"></script>
+        <!-- script -->
+        <script src="JS.js"></script>  
 
     </body>
 </html>

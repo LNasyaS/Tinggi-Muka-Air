@@ -1,80 +1,6 @@
 // fetch select lokasi
 
-let dropdown = document.getElementById('lokasi');
-let searchButton = document.getElementById('searchButton');
-let iconSiaga = document.getElementById('icon-siaga');
-
-// Clear existing options
-dropdown.length = 0;
-
-// Add the default option
-let defaultOption = document.createElement('option');
-defaultOption.text = 'Pilih lokasi...';
-defaultOption.value = ''; // Set an empty value for the default option
-dropdown.add(defaultOption);
-dropdown.selectedIndex = 0;
-
-searchButton.addEventListener('click', function () {
-  const selectedValue = dropdown.value;
-
-  if (selectedValue !== '') {
-    fetch("https://poskobanjirdsda.jakarta.go.id/xmldata.xml")
-      .then(response => response.text())
-      .then(data => {
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(data, "text/xml");
-        const json = xmlToJson(xmlDoc.documentElement);
-
-        const selectedData = json.SP_GET_LAST_STATUS_PINTU_AIR.find(item => item.NAMA_PINTU_AIR === selectedValue);
-
-        if (selectedData) {
-          document.querySelector(".tanggal").textContent = selectedData.TANGGAL;
-          document.querySelector(".lokasi").textContent = selectedData.NAMA_PINTU_AIR;
-          document.querySelector(".tinggi-air").textContent = selectedData.TINGGI_AIR;
-          document.querySelector(".status").textContent = selectedData.STATUS_SIAGA;
-        } else {
-          console.error('Data not found for the selected location.');
-        }
-        
-        if(selectedData.STATUS_SIAGA == "Status : Normal"){
-            iconSiaga.src = "images/icon-normal.png";
-        }else if(selectedData.STATUS_SIAGA == "Status : Siaga 1"){
-            iconSiaga.src = "images/icon-siaga1.png";
-        }else if(selectedData.STATUS_SIAGA == "Status : Siaga 2"){
-            iconSiaga.src = "images/icon-siaga2.gif";
-        }else if(selectedData.STATUS_SIAGA == "Status : Siaga 3"){
-            iconSiaga.src = "images/icon-siaga3.png";
-        }
-        
-      })
-      .catch(error => {
-        console.error('Fetch Error:', error);
-      });
-  } else {
-    console.warn('Please select a location before searching.');
-  }
-
-});
-
-// Fetch XML data and populate dropdown
-fetch("https://poskobanjirdsda.jakarta.go.id/xmldata.xml")
-  .then(response => response.text())
-  .then(data => {
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(data, "text/xml");
-    const json = xmlToJson(xmlDoc.documentElement);
-
-    const namaPintuAirList = json.SP_GET_LAST_STATUS_PINTU_AIR.map(item => item.NAMA_PINTU_AIR);
-
-    namaPintuAirList.forEach(namaPintuAir => {
-      let option = document.createElement('option');
-      option.text = namaPintuAir;
-      option.value = namaPintuAir;
-      dropdown.add(option);
-    });
-  })
-  .catch(console.error);
-
+// Define xmlToJson function
 function xmlToJson(node) {
   const obj = {};
 
@@ -113,3 +39,106 @@ function xmlToJson(node) {
 
   return obj;
 }
+
+let dropdown = document.getElementById('lokasi');
+let searchButton = document.getElementById('searchButton');
+let iconSiaga = document.getElementById('icon-siaga');
+
+// Clear existing options
+dropdown.length = 0;
+
+// Fetch XML data and populate dropdown
+fetch("https://poskobanjirdsda.jakarta.go.id/xmldata.xml")
+  .then(response => response.text())
+  .then(data => {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(data, "text/xml");
+    const json = xmlToJson(xmlDoc.documentElement);
+
+    const namaPintuAirList = json.SP_GET_LAST_STATUS_PINTU_AIR.map(item => item.NAMA_PINTU_AIR);
+
+    namaPintuAirList.forEach(namaPintuAir => {
+      let option = document.createElement('option');
+      option.text = namaPintuAir;
+      option.value = namaPintuAir;
+      dropdown.add(option);
+    });
+
+    // Set the initial dropdown value to "PS. Angke Hulu"
+    dropdown.value = "PS. Angke Hulu";
+
+    // Trigger the search button click event after setting the initial value
+    searchButton.click();
+  })
+  .catch(error => {
+    console.error('Fetch Error:', error);
+  });
+
+
+searchButton.addEventListener('click', function () {
+  const selectedValue = dropdown.value;
+
+  if (selectedValue !== '') {
+    fetch("https://poskobanjirdsda.jakarta.go.id/xmldata.xml")
+      .then(response => response.text())
+      .then(data => {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(data, "text/xml");
+        const json = xmlToJson(xmlDoc.documentElement);
+
+        const selectedData = json.SP_GET_LAST_STATUS_PINTU_AIR.find(item => item.NAMA_PINTU_AIR === selectedValue);
+
+        if (selectedData) {
+          document.querySelector(".tanggal").textContent = selectedData.TANGGAL;
+          document.querySelector(".lokasi").textContent = selectedData.NAMA_PINTU_AIR;
+          document.querySelector(".tinggi-air").textContent = selectedData.TINGGI_AIR;
+          document.querySelector(".status").textContent = selectedData.STATUS_SIAGA;
+
+          if (selectedData.STATUS_SIAGA == "Status : Normal") {
+            iconSiaga.src = "images/icon-normal.png";
+          } else if (selectedData.STATUS_SIAGA == "Status : Siaga 1") {
+            iconSiaga.src = "images/icon-siaga1.png";
+          } else if (selectedData.STATUS_SIAGA == "Status : Siaga 2") {
+            iconSiaga.src = "images/icon-siaga2.gif";
+          } else if (selectedData.STATUS_SIAGA == "Status : Siaga 3") {
+            iconSiaga.src = "images/icon-siaga3.png";
+          }
+        } else {
+          console.error('Data not found for the selected location.');
+        }
+      })
+      .catch(error => {
+        console.error('Fetch Error:', error);
+      });
+  } else {
+    console.warn('Please select a location before searching.');
+  }
+});
+
+// Listen for changes in the dropdown selection
+dropdown.addEventListener('change', function () {
+  // Optionally, you can add additional logic here if needed
+});
+
+
+// chart
+const ctx = document.getElementById('myChart');
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    datasets: [{
+      label: '# of Votes',
+      data: [12, 19, 3, 5, 2, 3],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});

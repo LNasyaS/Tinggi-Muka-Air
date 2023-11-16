@@ -9,18 +9,18 @@
 body {
     background: #222;
     overflow: visible;
-
 }
 
 .card {
-    width: 90%;
-    max-width: 470px;
+    width: 100%;
+    max-width: 650px;
     background: linear-gradient(135deg, #00feba, #5b548a);
     color: #fff;
     margin: 50px auto 0;
     border-radius: 20px;
     padding: 40px 35px;
     text-align: center;
+    overflow: hidden;
 }
 
 /* Select Lokasi */
@@ -51,7 +51,7 @@ body {
     display: inline-block;
     border: 0;
     outline: 0;
-    background-color: #ebfffc;
+    background-color: #5b548a;
     border-radius: 15px;
     width: 60px;
     height: 50px;
@@ -66,10 +66,12 @@ body {
     background-color: rgba(230, 224, 218, 0.8)
 }
 
-/* informasi */
-
-.tanggal {
+/* status siaga */
+.status-siaga {
+    box-shadow: 2px 3px 7px 0px rgba(0,0,0,0.35);
+    padding: 30px;
     margin-top: 30px;
+    border-radius: 15px;
 }
 
 .status-siaga img {
@@ -91,4 +93,73 @@ body {
 .tinggi-air {
     font-size: 40px;
     font-weight: 500;
+}
+
+/* calendar */
+.chart {
+    box-shadow: 2px 3px 7px 0px rgba(0,0,0,0.35);
+    padding: 30px;
+    margin-top: 30px;
+    border-radius: 15px;
+}
+
+.chart h1 {
+    font-size: 25px;
+    font-weight: 800;
+    text-align: left;
+}
+
+.calendar {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.calendar-kiri {
+    flex: 1;
+    display: inline-block;
+}
+
+.calendar-kanan {
+    flex: 1;
+    display: inline-block;
+}
+
+.calendar input {
+    border: 0;
+    outline: 0;
+    padding: 2px 24px;
+    border-radius: 10px;
+    height: 40px;
+}
+
+.calendar h2 {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.calendar button {
+    height: 30px;
+    width: 100%;
+    border-radius: 15px;
+    border: 0;
+    outline: 0;
+    margin-top: 30px;
+    background-color: #5b548a;
+}
+
+#search-button-calendar img {
+    width: 16px;
+}
+
+#search-button-calendar:hover {
+    cursor: pointer;
+    background-color: rgba(230, 224, 218, 0.8)
+}
+
+/* chart */
+#myChart {
+    margin-top: 30px;
+    background-color: #ebfffc;
+    border-radius: 15px; 
 }
